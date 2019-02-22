@@ -1344,6 +1344,15 @@ class Client(BaseClient):
         ]
 
         return self._post('order', True, hash_data=hash_data)
+    
+    def create_rawtrade(self, order_hash, token, amount):
+        hash_data = [
+            ["orderHash", order_hash, "address"],
+            ["amount", amount, "uint256"],
+            ["address", self._wallet_address, "address"],
+            ["nonce", self._get_nonce(), "uint256"],
+        ]
+        return self._post("trade", True, hash_data=hash_data)
 
     @require_address
     @require_private_key
