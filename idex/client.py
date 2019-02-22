@@ -1345,7 +1345,24 @@ class Client(BaseClient):
 
         return self._post('order', True, hash_data=hash_data)
     
-    def create_rawtrade(self, order_hash, token, amount):
+    def create_raworder(
+        self, token_buy_contract, token_sell_contract, amount_buy, amount_sell
+    ):
+        contract_address = self._get_contract_address()
+        hash_data = [
+            ["contractAddress", contract_address, "address"],
+            ["tokenBuy", token_buy_contract, "address"],
+            ["amountBuy", amount_buy, "uint256"],
+            ["tokenSell", token_sell_contract, "address"],
+            ["amountSell", amount_sell, "uint256"],  # price * quantity
+            ["expires", "10000", "uint256"],
+            ["nonce", self._get_nonce(), "uint256"],
+            ["address", self._wallet_address, "address"],
+        ]
+        return self._post("order", True, hash_data=hash_data)
+
+    
+    def create_rawtrade(self, order_hash, amount):
         hash_data = [
             ["orderHash", order_hash, "address"],
             ["amount", amount, "uint256"],
